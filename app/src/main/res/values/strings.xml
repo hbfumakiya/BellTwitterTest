@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">BellTwitterTest</string>
     <string name="welcome_to_belltwittertest">Welcome to BellTwitterTest</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Search tags, tweets</string>
+    <string name="search_tweets">Search Tweets</string>
 </resources>
