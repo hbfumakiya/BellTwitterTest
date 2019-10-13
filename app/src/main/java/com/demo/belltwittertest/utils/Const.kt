@@ -11,5 +11,6 @@ object Const {
     const val TWITTER_ACCESS_TOKEN_SECRET_KEY= "ZA1eQsjcAuBpEhUX8MOGpwbXFPzlxpDrUJVRv7rWObe3B"
 
     const val DEFAULT_RADIUS=5000.0 // 5kms
+    const val DEFAULT_ZOOM_SCALE=15F // 5kms
 
 }

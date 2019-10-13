@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.demo.belltwittertest.R
 
 class TweetSearchFragment:Fragment() {
+
     companion object {
         fun newInstance() = TweetSearchFragment()
     }

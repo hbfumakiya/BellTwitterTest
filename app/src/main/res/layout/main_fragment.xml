@@ -30,8 +30,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_weight="1"
-        android:max="100"
+        android:max="6371"
         android:progress="5"
+        android:min="5"
         app:layout_constraintEnd_toStartOf="@+id/radiusView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
