@@ -4,4 +4,9 @@
     <string name="search_title">Search</string>
     <string name="search_hint">Search tags, tweets</string>
     <string name="search_tweets">Search Tweets</string>
+    <string name="my_tweet">TweetView</string>
+    <string name="check_internet">Please check network Connection</string>
+    <string name="loginTwitter">Login with Twitter</string>
+    <string name="invalidUser">Invalid User</string>
+    <string name="successAuth">Successful Authentication</string>
 </resources>
