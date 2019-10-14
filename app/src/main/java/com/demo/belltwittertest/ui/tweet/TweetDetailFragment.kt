@@ -1,6 +1,7 @@
 package com.demo.belltwittertest.ui.tweet
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -13,7 +14,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.demo.belltwittertest.R
 import com.demo.belltwittertest.TwitterInterface
-import com.twitter.sdk.android.core.TwitterCore
+import com.demo.belltwittertest.utils.getImageUrl
+import com.demo.belltwittertest.utils.hasImage
+import com.demo.belltwittertest.utils.loadUrl
 import com.twitter.sdk.android.core.models.Tweet
 import kotlinx.android.synthetic.main.media_layout.*
 import kotlinx.android.synthetic.main.tweet_detail.*
@@ -21,10 +24,10 @@ import kotlinx.android.synthetic.main.tweet_detail_fragment.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MyTweetFragment:Fragment(),TwitterInterface {
+class TweetDetailFragment:Fragment(),TwitterInterface {
 
     companion object {
-        fun newInstance() = MyTweetFragment()
+        fun newInstance() = TweetDetailFragment()
     }
 
     private var tweetId:Long=0
@@ -32,8 +35,16 @@ class MyTweetFragment:Fragment(),TwitterInterface {
     private lateinit var tweetOpViewModel: TweetOperationViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view= inflater.inflate(R.layout.tweet_detail_fragment, container, false);
-        return view
+        return inflater.inflate(R.layout.tweet_detail_fragment, container, false)
+    }
+
+    private fun openTweetInApp(tweet:Tweet) {
+        if(tweetId!=0L){
+            activity?.let {context->
+                val intent=Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/${tweet.user.screenName}/status/${tweet.id}"))
+                context.startActivity(Intent.createChooser(intent,"Tweet"))
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -52,23 +63,20 @@ class MyTweetFragment:Fragment(),TwitterInterface {
     }
 
     private fun displayTweet(tweet: Tweet?) {
-        if(tweet!=null){
-            profileView.apply {
-                setImageResource(R.drawable.tw__ic_logo_default)
-                setBackgroundColor(context.resources.getColor(R.color.colorPrimary))
+        tweet?.let { tweet->
+            view?.setOnClickListener {
+                openTweetInApp(tweet)
             }
-            userName.apply {
-                text=tweet.user.name
-            }
-            userId.apply {
-                text=tweet.user.screenName
-            }
-            text.apply {
-                text=tweet.text.trim()
-            }
-            favCount.apply {
-                text=tweet.favoriteCount.toString()
-            }
+            profileView.loadUrl(tweet.user.profileImageUrl)
+
+            userName.text=tweet.user.name
+
+            userId.text=tweet.user.screenName
+
+            text.text=tweet.text.trim()
+
+            favCount.text=tweet.favoriteCount.toString()
+
             favImg.apply {
                 if(tweet.favorited)
                     setImageResource(R.drawable.favourite_filled)
@@ -83,9 +91,8 @@ class MyTweetFragment:Fragment(),TwitterInterface {
                 }
 
             }
-            retweetCount.apply {
-                text=tweet.retweetCount.toString()
-            }
+            retweetCount.text=tweet.retweetCount.toString()
+
             retweetImg.apply {
                 if(tweet.retweeted)
                     setImageResource(R.drawable.retweet_select)
@@ -100,15 +107,13 @@ class MyTweetFragment:Fragment(),TwitterInterface {
                 }
 
             }
-            timeStamp.apply {
-                val timestamp= SimpleDateFormat("EEE MMM dd HH:mm:ss Zyyyy", Locale.ENGLISH).parse(tweet.createdAt).time
-                timestamp.let {
-                    text= DateUtils.getRelativeTimeSpanString(context,timestamp)
-                }
-            }
+            val timeString= SimpleDateFormat("EEE MMM dd HH:mm:ss Zyyyy", Locale.ENGLISH).parse(tweet.createdAt).time
+            timeStamp.text= DateUtils.getRelativeTimeSpanString(context,timeString)
+
             mediaImg.apply {
-                if(tweet.extendedEntities.media.size>0 && tweet.extendedEntities.media[0].type=="photo"){
+                if(tweet.hasImage()){
                     visibility=View.VISIBLE
+                    loadUrl(tweet.getImageUrl())
                     activity?.applicationContext?.let { Glide.with(context).load(tweet.extendedEntities.media[0].mediaUrl).into(this); }
                 }else{
                     visibility=View.GONE
@@ -122,6 +127,7 @@ class MyTweetFragment:Fragment(),TwitterInterface {
 
 
 
+
     }
 
     override fun viewTweet(id:Long) {
@@ -130,7 +136,7 @@ class MyTweetFragment:Fragment(),TwitterInterface {
 
     override fun favouriteTweet(id:Long) {
         activity?.let {
-            if(needTwitterSession()){
+            if(tweetOpViewModel.needTwitterSession()){
                 startActivity(Intent(it,TweetLoginActivity::class.java))
             }else{
                 tweetOpViewModel.favouriteTweet(tweetId)
@@ -140,7 +146,7 @@ class MyTweetFragment:Fragment(),TwitterInterface {
 
     override fun unfavouriteTweet(id:Long) {
         activity?.let {
-            if(needTwitterSession()){
+            if(tweetOpViewModel.needTwitterSession()){
                 startActivity(Intent(it,TweetLoginActivity::class.java))
             }else{
                 tweetOpViewModel.unFavouriteTweet(tweetId)
@@ -151,7 +157,7 @@ class MyTweetFragment:Fragment(),TwitterInterface {
 
     override fun reTweet(id:Long) {
         activity?.let {
-            if(needTwitterSession()){
+            if(tweetOpViewModel.needTwitterSession()){
                 startActivity(Intent(it,TweetLoginActivity::class.java))
             }else{
                 tweetOpViewModel.reTweet(tweetId)
@@ -162,7 +168,7 @@ class MyTweetFragment:Fragment(),TwitterInterface {
 
     override fun undoReTweet(id:Long) {
         activity?.let {
-            if(needTwitterSession()){
+            if(tweetOpViewModel.needTwitterSession()){
                 startActivity(Intent(it,TweetLoginActivity::class.java))
             }else{
                 tweetOpViewModel.undoReTweet(tweetId)
@@ -171,5 +177,5 @@ class MyTweetFragment:Fragment(),TwitterInterface {
 
     }
 
-    private fun needTwitterSession():Boolean= TwitterCore.getInstance().sessionManager.activeSession==null
+
 }

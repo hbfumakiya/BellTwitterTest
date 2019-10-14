@@ -19,21 +19,23 @@ class TweetSearchViewModel :ViewModel() {
         try {
             val location= CacheLoader.getLocation()
             val radius=CacheLoader.getRadius()
+            location?.let {
+                val geoCode= Geocode(location.latitude,location.longitude,radius.toInt(), Geocode.Distance.KILOMETERS)
+                TwitterCore.getInstance().apiClient.searchService.tweets(filterText,geoCode,null,null,
+                    null,100,null,null,null,true)
+                    .enqueue(object: Callback<Search>() {
+                        override fun success(result: Result<Search>?) {
+                            val tweets = (result?.response?.body() as Search).tweets?: emptyList()
+                            filteredTweets.value=tweets.toMutableList()
+                        }
 
-            val geoCode= Geocode(location.latitude,location.longitude,radius.toInt(), Geocode.Distance.KILOMETERS)
-            TwitterCore.getInstance().apiClient.searchService.tweets(filterText,geoCode,null,null,
-                null,100,null,null,null,true)
-                .enqueue(object: Callback<Search>() {
-                    override fun success(result: Result<Search>?) {
-                        val tweets = (result?.response?.body() as Search).tweets?: emptyList()
-                        filteredTweets.value=tweets.toMutableList()
-                    }
+                        override fun failure(exception: TwitterException?) {
+                            exception?.printStackTrace()
+                        }
 
-                    override fun failure(exception: TwitterException?) {
-                        exception?.printStackTrace()
-                    }
+                    })
+            }
 
-                })
 
         }catch (e:Exception){
             e.printStackTrace()

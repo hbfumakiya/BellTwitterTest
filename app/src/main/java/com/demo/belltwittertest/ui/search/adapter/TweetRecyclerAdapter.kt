@@ -1,4 +1,4 @@
-package com.demo.belltwittertest.adapter
+package com.demo.belltwittertest.ui.search.adapter
 
 import android.content.Context
 import android.text.format.DateUtils
@@ -10,11 +10,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.belltwittertest.R
 import com.demo.belltwittertest.TwitterInterface
+import com.demo.belltwittertest.utils.loadUrl
 import com.twitter.sdk.android.core.models.Tweet
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TweetRecyclerAdapter (private val context: Context, private val tweets: ArrayList<Tweet>,
+
+
+
+class TweetRecyclerAdapter (private val context: Context, private var tweets: ArrayList<Tweet>,
                             private val twitInterface:TwitterInterface) :  RecyclerView.Adapter<TweetRecyclerAdapter.TweetViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TweetViewHolder {
 
@@ -32,12 +36,27 @@ class TweetRecyclerAdapter (private val context: Context, private val tweets: Ar
         holder.bind(tweets[position])
     }
 
+    private fun setItems(updatedTweets: ArrayList<Tweet>) {
+        this.tweets = updatedTweets
+        notifyDataSetChanged()
+    }
+
+    fun updateTweet(tweet: Tweet) {
+        tweets.forEach { t->
+            if(t.id==tweet.id){
+                tweets.remove(t)
+                tweets.add(tweet)
+                setItems(tweets)
+                return
+            }
+        }
+    }
+
     // this is viewholder for recyclerview
     inner class TweetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: Tweet) = with(itemView) {
             with(itemView.findViewById<ImageView>(R.id.profileView)){
-                setImageResource(R.drawable.tw__ic_logo_default)
-                setBackgroundColor(context.resources.getColor(R.color.colorPrimary))
+                loadUrl(item.user.profileImageUrl)
             }
             with(itemView.findViewById<TextView>(R.id.userName)){
                 text=item.user.name

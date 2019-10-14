@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.demo.belltwittertest.R
-import com.demo.belltwittertest.adapter.MyInfoViewAdapter
+import com.demo.belltwittertest.ui.main.adapter.MyInfoViewAdapter
 import com.demo.belltwittertest.utils.*
 import com.demo.belltwittertest.utils.Const.DEFAULT_RADIUS
 import com.demo.belltwittertest.utils.Const.DEFAULT_ZOOM_SCALE
@@ -39,13 +39,17 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: MainViewModel
 
     private lateinit var mMap: GoogleMap
-    private lateinit var mLocation:LatLng
-    private  var location:Location?=null
+    private lateinit var mLocation: LatLng
+    private var location: Location? = null
     private lateinit var circle: Circle
 
-    private var circleRadius= DEFAULT_RADIUS
+    private var circleRadius = DEFAULT_RADIUS
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
@@ -61,7 +65,6 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         })
 
 
-
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -70,9 +73,9 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         }
 
         activity?.let {
-            if(hasLocationAccess(it)){
+            if (hasLocationAccess(it)) {
                 requestLocation()
-            }else {
+            } else {
                 PermissionValidator.requestPermission(it)
             }
         }
@@ -80,44 +83,77 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addMapCircle(mLocation: LatLng) {
-        circle=mMap.addCircle(CircleOptions()
-            .center(mLocation)
-            .radius(circleRadius)
-            .strokeWidth(2f)
-            .fillColor(0x220000FF))
+        circle = mMap.addCircle(
+            CircleOptions()
+                .center(mLocation)
+                .radius(circleRadius)
+                .strokeWidth(2f)
+                .fillColor(0x220000FF)
+        )
 
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(mLocation,getZoomLevel(circle))))
+        mMap.animateCamera(
+            CameraUpdateFactory.newCameraPosition(
+                CameraPosition.fromLatLngZoom(
+                    mLocation,
+                    circle.getZoomLevel()
+                )
+            )
+        )
     }
 
 
     private fun requestLocation() {
 
-        location=getLastKnownLocation()
-        location?.let {
-            CacheLoader.setLocation(it)
+        location = getLastKnownLocation()
 
-            mLocation= LatLng(it.latitude, it.longitude)
+        if(location==null)
+            location= CacheLoader.getLocation()
+
+        location?.let {
+
+            mLocation = LatLng(it.latitude, it.longitude)
             mLocation.let {
                 mMap.apply {
                     moveCamera(CameraUpdateFactory.newLatLng(mLocation))
-                    animateCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(mLocation,DEFAULT_ZOOM_SCALE)))
-                    setInfoWindowAdapter(activity?.let { it1 -> MyInfoViewAdapter(it1) })
-                    uiSettings.isMyLocationButtonEnabled=false
-                }
+                    animateCamera(
+                        CameraUpdateFactory.newCameraPosition(
+                            CameraPosition.fromLatLngZoom(
+                                mLocation,
+                                DEFAULT_ZOOM_SCALE
+                            )
+                        )
+                    )
+                    activity?.let {activity->
+                        val adapter= MyInfoViewAdapter(activity)
+                        setInfoWindowAdapter(adapter)
+                        setOnInfoWindowClickListener(adapter)
+                    }
 
+                    uiSettings.isMyLocationButtonEnabled = false
+                }
             }
-            viewModel.getNearbyTweets(it,circleRadius.toFloat())
+            activity?.let {activity->
+                if (activity.isNetworkAvailable())
+                    viewModel.getNearbyTweets(it, circleRadius.toFloat())
+                else
+                    Toast.makeText(activity, R.string.check_internet, Toast.LENGTH_SHORT).show()
+            }
+
 
         }
 
-     }
+    }
 
 
     private fun getLastKnownLocation(): Location? {
         activity?.let {
-            val locationManager=it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val locationManager = it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-            return if(ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED)
+            return if (ContextCompat.checkSelfPermission(
+                    it,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            )
                 locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             else
                 null
@@ -127,25 +163,29 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun loadTweetsOnMap(nearbyTweets: MutableList<Tweet>?) {
-        nearbyTweets?.let {
-            it.map { Pair(it,it.getLatLng()) }
-              .forEach { addMarker(it)}
-
+        mMap.clear()
+        mLocation.let {
             addMapCircle(mLocation)
-            CacheLoader.setRecentTweets(nearbyTweets?.toList())
+            nearbyTweets?.let {
+                it.map { tweet: Tweet ->
+                    tweet.getLatLng()?.let { latLng ->
+                        Pair(tweet, latLng)
+                    }
+                }.forEach { pair: Pair<Tweet, LatLng>? ->
+                    pair?.let { addMarker(pair) }
+                }
+
+            }
         }
+
 
     }
 
-    private fun addMarker(tweet: Pair<Tweet, LatLng?>) {
-        mMap.apply {
-            val json=tweet.first.toJSON()
-            tweet.second?.let {
-                addMarker( MarkerOptions().position(it)
-                    .title(tweet.first.user.name)
-                    .snippet(json.toString()))
-            }
-        }
+    private fun addMarker(tweet: Pair<Tweet, LatLng>) {
+        val json = tweet.first.toJSON()
+        mMap.addMarker( MarkerOptions().position(tweet.second)
+            .title(tweet.first.user.name)
+            .snippet(json.toString()))
 
     }
 
@@ -153,34 +193,38 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
         setRadius(DEFAULT_RADIUS)
 
-        seekBar.setOnSeekBarChangeListener(object :SeekBar.OnSeekBarChangeListener{
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                setRadius(progress*1000.0)
-                mMap.clear()
-                addMapCircle(mLocation)
+                setRadius(progress * 1000.0)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                location?.let { viewModel.getNearbyTweets(it,circleRadius.toFloat()) }
+
+                if(location==null)
+                    location= CacheLoader.getLocation()
+
+                location?.let {
+                    activity?.let {activity->
+                        if (activity.isNetworkAvailable())
+                            viewModel.getNearbyTweets(it, circleRadius.toFloat())
+                        else
+                            Toast.makeText(activity, R.string.check_internet, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         })
 
-        val mapFragment =childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        activity?.let {
-            if(!isNetworkAvailable(it))
-                Toast.makeText(it,R.string.check_internet,Toast.LENGTH_SHORT).show()
-        }
-
     }
-    private fun setRadius(radius:Double){
-        circleRadius=radius
-        radiusView.text="${circleRadius/1000} KM"
-        CacheLoader.setRadius(circleRadius)
+
+    private fun setRadius(radius: Double) {
+        circleRadius = radius
+        radiusView.text = "${circleRadius / 1000} KM"
     }
 
 }

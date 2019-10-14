@@ -23,7 +23,7 @@ object CacheLoader : Cache<String,Any> {
 
     fun setRadius(radius:Double){
         runBlocking {
-            val save = async(start = CoroutineStart.LAZY) {
+            val save = async(start = CoroutineStart.DEFAULT) {
                 lruCache.put("radius",radius)
             }
             save.await()
@@ -33,7 +33,7 @@ object CacheLoader : Cache<String,Any> {
     fun getRadius():Double{
 
         return runBlocking {
-            val read = async(start = CoroutineStart.LAZY) {
+            val read = async(start = CoroutineStart.DEFAULT) {
                 lruCache.get("radius") as Double
             }
            read.await()
@@ -42,17 +42,18 @@ object CacheLoader : Cache<String,Any> {
 
     fun setLocation(location:Location?){
         runBlocking {
-            val save = async(start = CoroutineStart.LAZY) {
+            val save = async(start = CoroutineStart.DEFAULT) {
                 lruCache.put("location",location)
             }
             save.await()
         }
     }
 
-    fun getLocation():Location{
+    fun getLocation():Location?{
         return runBlocking {
-            val read = async(start = CoroutineStart.LAZY) {
-                lruCache.get("location") as Location
+
+            val read = async(start = CoroutineStart.DEFAULT) {
+                lruCache.get("location") as Location?
             }
             read.await()
         }
@@ -60,7 +61,7 @@ object CacheLoader : Cache<String,Any> {
 
     fun setRecentTweets(tweets:List<Tweet>){
         runBlocking {
-            val save = async(start = CoroutineStart.LAZY) {
+            val save = async(start = CoroutineStart.DEFAULT) {
                 lruCache.put("recentTweets",tweets)
             }
             save.await()
@@ -69,7 +70,7 @@ object CacheLoader : Cache<String,Any> {
 
     fun getRecentTweets():List<Tweet>{
         return runBlocking {
-            val read = async(start = CoroutineStart.LAZY) {
+            val read = async(start = CoroutineStart.DEFAULT) {
                 lruCache.get("recentTweets") as List<Tweet>
             }
             read.await()

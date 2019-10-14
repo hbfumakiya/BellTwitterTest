@@ -24,6 +24,7 @@ class TweetLoginActivity : AppCompatActivity() {
             override fun success(result: com.twitter.sdk.android.core.Result<TwitterSession>?) {
                 result?.response?.code()?.let {
                     setResult(it)
+                    finish()
                     Toast.makeText(applicationContext, R.string.successAuth, Toast.LENGTH_SHORT).show()
                 }
             }

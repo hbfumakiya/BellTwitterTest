@@ -47,4 +47,6 @@ class TweetOperationViewModel :ViewModel() {
     fun undoReTweet(id:Long) {
         TwitterCore.getInstance().apiClient.statusesService.unretweet(id,null).enqueue(callback)
     }
+
+    fun needTwitterSession():Boolean= TwitterCore.getInstance().sessionManager.activeSession==null
 }

@@ -1,9 +1,9 @@
 package com.demo.belltwittertest.ui.main
 
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.demo.belltwittertest.utils.CacheLoader
 import com.twitter.sdk.android.core.Callback
 import com.twitter.sdk.android.core.Result
 import com.twitter.sdk.android.core.TwitterCore
@@ -20,13 +20,20 @@ class MainViewModel : ViewModel() {
     fun getNearbyTweets(location: Location, radius:Float){
 
         try {
+            CacheLoader.setLocation(location)
+
+            CacheLoader.setRadius(radius.toDouble())
+
             val geoCode=Geocode(location.latitude,location.longitude,radius.toInt(),Geocode.Distance.KILOMETERS)
+
             TwitterCore.getInstance().apiClient.searchService.tweets("#food",geoCode,null,null,
                 null,100,null,null,null,true)
                 .enqueue(object: Callback<Search>() {
                     override fun success(result: Result<Search>?) {
                         val tweets = (result?.response?.body() as Search).tweets
-                        tweetList.value=tweets.toMutableList()
+                        tweetList.postValue(tweets.toMutableList())
+
+                        CacheLoader.setRecentTweets(tweets)
                     }
 
                     override fun failure(exception: TwitterException?) {

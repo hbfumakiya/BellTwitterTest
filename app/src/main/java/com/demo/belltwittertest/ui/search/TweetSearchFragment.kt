@@ -13,11 +13,10 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.demo.belltwittertest.R
 import com.demo.belltwittertest.TwitterInterface
-import com.demo.belltwittertest.adapter.TweetRecyclerAdapter
-import com.demo.belltwittertest.ui.tweet.MyTweetActivity
+import com.demo.belltwittertest.ui.search.adapter.TweetRecyclerAdapter
+import com.demo.belltwittertest.ui.tweet.TweetDetailActivity
 import com.demo.belltwittertest.ui.tweet.TweetLoginActivity
 import com.demo.belltwittertest.ui.tweet.TweetOperationViewModel
-import com.twitter.sdk.android.core.TwitterCore
 import com.twitter.sdk.android.core.models.Tweet
 import kotlinx.android.synthetic.main.search_tweet_fragment.*
 
@@ -48,22 +47,38 @@ class TweetSearchFragment:Fragment(),TwitterInterface {
         tweetSearchviewModel.filteredTweets.observe(this, Observer {
             loadTweetsOnRecyclerView(it as ArrayList<Tweet>)
         })
+        tweetOpViewModel.retrivedTweet.observe(this, Observer {
+            updateTweet(it)
+        })
 
         tweetSearchviewModel.filterTweets("")
 
     }
 
+    private fun updateTweet(tweet: Tweet?) {
+        tweet?.let {
+            val adapter=recyclerView.adapter as TweetRecyclerAdapter
+             adapter.updateTweet(tweet)
+        }
+
+    }
+
     private fun loadTweetsOnRecyclerView(list: ArrayList<Tweet>) {
         activity?.let {
-            val layoutManager=LinearLayoutManager(it)
-            recyclerView.layoutManager=layoutManager
-            recyclerView.adapter=TweetRecyclerAdapter(it,list,this)
-            recyclerView.setHasFixedSize(true)
+            recyclerView.adapter= TweetRecyclerAdapter(it, list, this)
         }
 
     }
 
     private fun initUI() {
+
+        activity?.let {
+            val layoutManager=LinearLayoutManager(it)
+            recyclerView.layoutManager=layoutManager
+            recyclerView.setHasFixedSize(true)
+        }
+
+
         searchView.doOnLayout {
             searchView.requestFocus()
         }
@@ -83,11 +98,9 @@ class TweetSearchFragment:Fragment(),TwitterInterface {
 
     }
 
-    private fun needTwitterSession():Boolean= TwitterCore.getInstance().sessionManager.activeSession==null
-
     override fun favouriteTweet(id:Long) {
         activity?.let {
-            if(needTwitterSession()){
+            if(tweetOpViewModel.needTwitterSession()){
                 startActivity(Intent(it, TweetLoginActivity::class.java))
             }else{
                 tweetOpViewModel.favouriteTweet(id)
@@ -97,7 +110,7 @@ class TweetSearchFragment:Fragment(),TwitterInterface {
 
     override fun unfavouriteTweet(id:Long) {
         activity?.let {
-            if(needTwitterSession()){
+            if(tweetOpViewModel.needTwitterSession()){
                 startActivity(Intent(it, TweetLoginActivity::class.java))
             }else{
                 tweetOpViewModel.unFavouriteTweet(id)
@@ -108,7 +121,7 @@ class TweetSearchFragment:Fragment(),TwitterInterface {
 
     override fun reTweet(id:Long) {
         activity?.let {
-            if(needTwitterSession()){
+            if(tweetOpViewModel.needTwitterSession()){
                 startActivity(Intent(it, TweetLoginActivity::class.java))
             }else{
                 tweetOpViewModel.reTweet(id)
@@ -119,7 +132,7 @@ class TweetSearchFragment:Fragment(),TwitterInterface {
 
     override fun undoReTweet(id:Long) {
         activity?.let {
-            if(needTwitterSession()){
+            if(tweetOpViewModel.needTwitterSession()){
                 startActivity(Intent(it, TweetLoginActivity::class.java))
             }else{
                 tweetOpViewModel.undoReTweet(id)
@@ -129,9 +142,8 @@ class TweetSearchFragment:Fragment(),TwitterInterface {
     }
     override fun viewTweet(id:Long) {
         activity?.let {
-            val detailTweet= Intent(activity, MyTweetActivity::class.java)
+            val detailTweet= Intent(it, TweetDetailActivity::class.java)
             detailTweet.putExtra("id",id)
-            detailTweet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             it.startActivity(detailTweet)
         }
 
