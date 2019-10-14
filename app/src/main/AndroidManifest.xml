@@ -28,8 +28,11 @@
         </activity>
 
         <activity android:name=".ui.search.TweetSearchActivity"
-            android:label="@string/search_tweets"
-            android:theme="@style/AppTheme.NoActionToolBar"/>
+        android:theme="@style/AppTheme.NoActionToolBar"/>
+
+        <activity android:name=".ui.tweet.MyTweetActivity"
+            android:label="@string/my_tweet"/>
+        <activity android:name=".ui.tweet.TweetLoginActivity" />
 
     </application>
 

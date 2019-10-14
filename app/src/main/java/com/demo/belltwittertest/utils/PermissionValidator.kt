@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.text.BoringLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
@@ -23,5 +24,14 @@ object PermissionValidator {
 
     fun hasInternetAccess(context: Context):Boolean{
         return ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET)==PackageManager.PERMISSION_GRANTED
+    }
+
+    fun allowedAllPermission(context: Context):Boolean{
+        var allowed=true
+        arrayOf(Manifest.permission.INTERNET,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION).forEach {
+            if(ContextCompat.checkSelfPermission(context, it)== PackageManager.PERMISSION_GRANTED)
+                allowed=false
+        }
+        return allowed
     }
 }

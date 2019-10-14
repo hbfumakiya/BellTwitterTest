@@ -40,7 +40,7 @@ object CacheLoader : Cache<String,Any> {
         }
     }
 
-    fun setLocation(location:Location){
+    fun setLocation(location:Location?){
         runBlocking {
             val save = async(start = CoroutineStart.LAZY) {
                 lruCache.put("location",location)
