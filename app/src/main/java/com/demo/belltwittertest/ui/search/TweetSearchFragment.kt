@@ -7,8 +7,15 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.demo.belltwittertest.R
+import com.demo.belltwittertest.adapter.TweetRecyclerAdapter
+import com.twitter.sdk.android.core.models.Tweet
+import kotlinx.android.synthetic.main.search_tweet_fragment.*
+
 
 class TweetSearchFragment:Fragment() {
 
@@ -16,14 +23,40 @@ class TweetSearchFragment:Fragment() {
         fun newInstance() = TweetSearchFragment()
     }
 
-    private lateinit var searchView: SearchView
-    private lateinit var recyclerView:RecyclerView
+    private lateinit var tweetSearchviewModel: TweetSearchViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view=inflater.inflate(R.layout.search_tweet_fragment, container, false)
+        return inflater.inflate(R.layout.search_tweet_fragment, container, false)
+    }
 
-        searchView=view.findViewById(R.id.searchView)
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        initUI()
+
+        tweetSearchviewModel = ViewModelProviders.of(this).get(TweetSearchViewModel::class.java)
+
+        tweetSearchviewModel.filteredTweets.observe(this, Observer {
+            loadTweetsOnRecyclerView(it as ArrayList<Tweet>)
+        })
+
+        tweetSearchviewModel.filterTweets("")
+
+    }
+
+    private fun loadTweetsOnRecyclerView(list: ArrayList<Tweet>) {
+        activity?.let {
+            val layoutManager=LinearLayoutManager(it)
+            recyclerView.layoutManager=layoutManager
+            recyclerView.adapter=TweetRecyclerAdapter(it.applicationContext,list)
+            recyclerView.setHasFixedSize(true)
+          // recyclerView.addItemDecoration(DividerItemDecoration(it, DividerItemDecoration.VERTICAL))
+        }
+
+    }
+
+    private fun initUI() {
         searchView.doOnLayout {
             searchView.requestFocus()
         }
@@ -31,6 +64,7 @@ class TweetSearchFragment:Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
+                tweetSearchviewModel.filterTweets(newText)
                 return false
             }
 
@@ -40,8 +74,5 @@ class TweetSearchFragment:Fragment() {
 
         })
 
-        recyclerView=view.findViewById(R.id.recyclerView)
-
-        return view
     }
 }
