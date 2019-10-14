@@ -2,15 +2,15 @@ package com.demo.belltwittertest
 
 interface TwitterInterface{
 
-    fun viewTweet()
+    fun viewTweet(id:Long)
 
-    fun favouriteTweet()
+    fun favouriteTweet(id:Long)
 
-    fun unfavouriteTweet()
+    fun unfavouriteTweet(id:Long)
 
-    fun reTweet()
+    fun reTweet(id:Long)
 
-    fun undoReTweet()
+    fun undoReTweet(id:Long)
 
 
 }

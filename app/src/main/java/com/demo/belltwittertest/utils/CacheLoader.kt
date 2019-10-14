@@ -58,7 +58,7 @@ object CacheLoader : Cache<String,Any> {
         }
     }
 
-    fun setRecentTweets(tweets:ArrayList<Tweet>){
+    fun setRecentTweets(tweets:List<Tweet>){
         runBlocking {
             val save = async(start = CoroutineStart.LAZY) {
                 lruCache.put("recentTweets",tweets)
@@ -67,10 +67,10 @@ object CacheLoader : Cache<String,Any> {
         }
     }
 
-    fun getRecentTweets():ArrayList<Tweet>{
+    fun getRecentTweets():List<Tweet>{
         return runBlocking {
             val read = async(start = CoroutineStart.LAZY) {
-                lruCache.get("recentTweets") as ArrayList<Tweet>
+                lruCache.get("recentTweets") as List<Tweet>
             }
             read.await()
         }

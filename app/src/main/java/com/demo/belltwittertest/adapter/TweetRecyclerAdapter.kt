@@ -1,17 +1,21 @@
 package com.demo.belltwittertest.adapter
 
 import android.content.Context
-import android.content.Intent
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.belltwittertest.R
-import com.demo.belltwittertest.ui.tweet.MyTweetActivity
+import com.demo.belltwittertest.TwitterInterface
 import com.twitter.sdk.android.core.models.Tweet
+import java.text.SimpleDateFormat
+import java.util.*
 
-class TweetRecyclerAdapter (private val context: Context, private val tweets: ArrayList<Tweet>) :  RecyclerView.Adapter<TweetRecyclerAdapter.TweetViewHolder>() {
+class TweetRecyclerAdapter (private val context: Context, private val tweets: ArrayList<Tweet>,
+                            private val twitInterface:TwitterInterface) :  RecyclerView.Adapter<TweetRecyclerAdapter.TweetViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TweetViewHolder {
 
         val itemView = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false)
@@ -31,16 +35,62 @@ class TweetRecyclerAdapter (private val context: Context, private val tweets: Ar
     // this is viewholder for recyclerview
     inner class TweetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: Tweet) = with(itemView) {
-            with(itemView.findViewById<TextView>(R.id.textView)) {
-                text=item.text
+            with(itemView.findViewById<ImageView>(R.id.profileView)){
+                setImageResource(R.drawable.tw__ic_logo_default)
+                setBackgroundColor(context.resources.getColor(R.color.colorPrimary))
             }
-            setOnClickListener {
-                val detailTweet= Intent(context, MyTweetActivity::class.java)
-                detailTweet.putExtra("id",item.getId())
-                detailTweet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                context.startActivity(detailTweet)
+            with(itemView.findViewById<TextView>(R.id.userName)){
+                text=item.user.name
+            }
+            with(itemView.findViewById<TextView>(R.id.userId)){
+                text=item.user.screenName
+            }
+            with(itemView.findViewById<TextView>(R.id.text)) {
+                text=item.text.trim()
+            }
+            with(itemView.findViewById<TextView>(R.id.favCount)) {
+                text=item.favoriteCount.toString()
+            }
+            with(itemView.findViewById<ImageView>(R.id.favImg)) {
+                if(item.favorited)
+                    setImageResource(R.drawable.favourite_filled)
+                else
+                    setImageResource(R.drawable.favourite_border)
+
+                setOnClickListener {
+                    if(item.favorited)
+                        twitInterface.unfavouriteTweet(item.id)
+                    else
+                        twitInterface.favouriteTweet(item.id)
+
+                }
+            }
+            with(itemView.findViewById<TextView>(R.id.retweetCount)) {
+                text=item.retweetCount.toString()
+            }
+            with(itemView.findViewById<ImageView>(R.id.retweetImg)) {
+                if(item.retweeted)
+                    setImageResource(R.drawable.retweet_select)
+                else
+                    setImageResource(R.drawable.retweet_unselect)
+                setOnClickListener {
+                    if(item.retweeted)
+                        twitInterface.undoReTweet(item.id)
+                    else
+                        twitInterface.reTweet(item.id)
+
+                }
+            }
+            with(itemView.findViewById<TextView>(R.id.timeStamp)) {
+                val timestamp=SimpleDateFormat("EEE MMM dd HH:mm:ss Zyyyy", Locale.ENGLISH).parse(item.createdAt).time
+                timestamp.let {
+                    text=DateUtils.getRelativeTimeSpanString(context,timestamp)
+                }
             }
 
+            setOnClickListener {
+                twitInterface.viewTweet(item.id)
+            }
         }
 
     }

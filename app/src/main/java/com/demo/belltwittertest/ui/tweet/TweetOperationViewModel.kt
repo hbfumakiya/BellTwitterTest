@@ -1,5 +1,6 @@
 package com.demo.belltwittertest.ui.tweet
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.twitter.sdk.android.core.Callback
@@ -15,6 +16,7 @@ class TweetOperationViewModel :ViewModel() {
         override fun success(result: Result<Tweet>?) {
 
             val tweet=result?.response?.body() as Tweet
+            Log.d("TweetOperationViewModel","operation successful")
 
             retrivedTweet.value=tweet
         }

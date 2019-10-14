@@ -28,7 +28,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.twitter.sdk.android.core.models.Tweet
 import kotlinx.android.synthetic.main.main_fragment.*
-import kotlinx.coroutines.runBlocking
 
 
 class MainFragment : Fragment(), OnMapReadyCallback {
@@ -128,12 +127,13 @@ class MainFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun loadTweetsOnMap(nearbyTweets: MutableList<Tweet>?) {
-        nearbyTweets?.map {
-            Pair(it,it.getLatLng())
-        }?.forEach {
-            addMarker(it)
+        nearbyTweets?.let {
+            it.map { Pair(it,it.getLatLng()) }
+              .forEach { addMarker(it)}
+
+            addMapCircle(mLocation)
+            CacheLoader.setRecentTweets(nearbyTweets?.toList())
         }
-        addMapCircle(mLocation)
 
     }
 
