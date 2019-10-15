@@ -34,6 +34,7 @@
         <activity android:name=".ui.tweet.TweetDetailActivity"
             android:label="@string/my_tweet"/>
         <activity android:name=".ui.tweet.TweetLoginActivity" />
+        <activity android:name=".ui.MediaViewActivity" />
 
     </application>
 

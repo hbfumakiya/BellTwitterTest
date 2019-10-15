@@ -24,7 +24,7 @@ fun Activity.isNetworkAvailable(): Boolean {
 
 fun Circle.getZoomLevel(): Float {
     var zoomLevel = DEFAULT_ZOOM_SCALE
-    val radiusCircle = radius ?: (CacheLoader.getRadius())
+    val radiusCircle = radius
     val radius = radiusCircle + radiusCircle / 2
     val scale = radius / 500
     zoomLevel = ((16 - Math.log(scale) / Math.log(2.0)).toFloat())
@@ -104,6 +104,14 @@ fun Tweet.getVideoCoverUrl(): String {
         return entities.media[0]?.mediaUrlHttps ?: (entities.media[0]?.mediaUrl ?: "")
     throw RuntimeException("No video")
 }
+
+fun Tweet.getVideoUrlType(): Pair<String, String> {
+    if (hasSingleVideo() || hasMultipleMedia()) {
+        return Pair(extendedEntities.media[0].videoInfo.variants[0].url, extendedEntities.media[0].videoInfo.variants[0].contentType) // ideally we will pick a variant (i.e video quality) based on the screen size or user preferences
+    }
+    throw RuntimeException("No video")
+}
+
 
 
 

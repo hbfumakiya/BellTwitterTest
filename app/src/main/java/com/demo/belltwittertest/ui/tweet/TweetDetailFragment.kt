@@ -7,16 +7,13 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
 import com.demo.belltwittertest.R
 import com.demo.belltwittertest.TwitterInterface
-import com.demo.belltwittertest.utils.getImageUrl
-import com.demo.belltwittertest.utils.hasImage
-import com.demo.belltwittertest.utils.loadUrl
+import com.demo.belltwittertest.ui.MediaViewActivity
+import com.demo.belltwittertest.utils.*
 import com.twitter.sdk.android.core.models.Tweet
 import kotlinx.android.synthetic.main.media_layout.*
 import kotlinx.android.synthetic.main.tweet_detail.*
@@ -111,18 +108,42 @@ class TweetDetailFragment:Fragment(),TwitterInterface {
             timeStamp.text= DateUtils.getRelativeTimeSpanString(context,timeString)
 
             mediaImg.apply {
+                when {
+                    tweet.hasImage() -> {
+                        visibility=View.VISIBLE
+                        loadUrl(tweet.getImageUrl())
+                        setOnClickListener{
+                            val intent =  Intent(context, MediaViewActivity::class.java)
+                            intent.putExtra("type", "image")
+                            intent.putExtra("image", tweet.getImageUrl())
+                            context.startActivity(intent)
+                        }
+                    }
+                    tweet.hasSingleVideo() -> {
+                        visibility=View.VISIBLE
+                        loadUrl(tweet.getVideoCoverUrl())
+                        setOnClickListener {
+                            val pair=tweet.getVideoUrlType()
+                            val intent =  Intent(context, MediaViewActivity::class.java)
+                            intent.putExtra("type", "video")
+                            intent.putExtra("video", pair.first)
+                            intent.putExtra("videoType", pair.second)
+                            context.startActivity(intent)
+                        }
+
+                    }
+                    else -> visibility=View.GONE
+                }
+
                 if(tweet.hasImage()){
                     visibility=View.VISIBLE
                     loadUrl(tweet.getImageUrl())
-                    activity?.applicationContext?.let { Glide.with(context).load(tweet.extendedEntities.media[0].mediaUrl).into(this); }
                 }else{
                     visibility=View.GONE
                 }
 
             }
 
-
-            Toast.makeText(activity,"${tweet?.text}",Toast.LENGTH_SHORT).show()
         }
 
 

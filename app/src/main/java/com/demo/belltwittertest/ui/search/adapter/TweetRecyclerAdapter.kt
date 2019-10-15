@@ -1,6 +1,7 @@
 package com.demo.belltwittertest.ui.search.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +11,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.belltwittertest.R
 import com.demo.belltwittertest.TwitterInterface
-import com.demo.belltwittertest.utils.loadUrl
+import com.demo.belltwittertest.ui.MediaViewActivity
+import com.demo.belltwittertest.utils.*
 import com.twitter.sdk.android.core.models.Tweet
 import java.text.SimpleDateFormat
 import java.util.*
-
-
 
 
 class TweetRecyclerAdapter (private val context: Context, private var tweets: ArrayList<Tweet>,
@@ -105,6 +105,35 @@ class TweetRecyclerAdapter (private val context: Context, private var tweets: Ar
                 timestamp.let {
                     text=DateUtils.getRelativeTimeSpanString(context,timestamp)
                 }
+            }
+            with(itemView.findViewById<ImageView>(R.id.mediaImg)) {
+                when {
+                    item.hasImage() -> {
+                        visibility=View.VISIBLE
+                        loadUrl(item.getImageUrl())
+                        setOnClickListener{
+                            val intent =  Intent(context, MediaViewActivity::class.java)
+                            intent.putExtra("type", "image")
+                            intent.putExtra("image", item.getImageUrl())
+                            context.startActivity(intent)
+                        }
+                    }
+                    item.hasSingleVideo() -> {
+                        visibility=View.VISIBLE
+                        loadUrl(item.getVideoCoverUrl())
+                        setOnClickListener {
+                            val pair=item.getVideoUrlType()
+                            val intent =  Intent(context, MediaViewActivity::class.java)
+                            intent.putExtra("type", "video")
+                            intent.putExtra("video", pair.first)
+                            intent.putExtra("videoType", pair.second)
+                            context.startActivity(intent)
+                        }
+
+                    }
+                    else -> visibility=View.GONE
+                }
+
             }
 
             setOnClickListener {
