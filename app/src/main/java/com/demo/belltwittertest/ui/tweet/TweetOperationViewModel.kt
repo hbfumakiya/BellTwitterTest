@@ -8,7 +8,9 @@ import com.twitter.sdk.android.core.Result
 import com.twitter.sdk.android.core.TwitterCore
 import com.twitter.sdk.android.core.TwitterException
 import com.twitter.sdk.android.core.models.Tweet
-
+/**
+ * Created by Hardik on 2019-10-12.
+ */
 class TweetOperationViewModel :ViewModel() {
     var retrivedTweet: MutableLiveData<Tweet> = MutableLiveData()
 

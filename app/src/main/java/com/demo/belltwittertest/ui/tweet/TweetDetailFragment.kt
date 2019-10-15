@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.demo.belltwittertest.R
 import com.demo.belltwittertest.TwitterInterface
 import com.demo.belltwittertest.ui.MediaViewActivity
+import com.demo.belltwittertest.ui.main.adapter.MyInfoViewAdapter.Companion.TWEET_ID
 import com.demo.belltwittertest.utils.*
 import com.twitter.sdk.android.core.models.Tweet
 import kotlinx.android.synthetic.main.media_layout.*
@@ -20,7 +21,9 @@ import kotlinx.android.synthetic.main.tweet_detail.*
 import kotlinx.android.synthetic.main.tweet_detail_fragment.*
 import java.text.SimpleDateFormat
 import java.util.*
-
+/**
+ * Created by Hardik on 2019-10-12.
+ */
 class TweetDetailFragment:Fragment(),TwitterInterface {
 
     companion object {
@@ -47,7 +50,7 @@ class TweetDetailFragment:Fragment(),TwitterInterface {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        tweetId=arguments?.get("id") as Long
+        tweetId=arguments?.get(TWEET_ID) as Long
 
         tweetOpViewModel = ViewModelProviders.of(this).get(TweetOperationViewModel::class.java)
 

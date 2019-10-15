@@ -9,7 +9,9 @@ import com.twitter.sdk.android.core.Callback
 import com.twitter.sdk.android.core.TwitterException
 import com.twitter.sdk.android.core.TwitterSession
 import com.twitter.sdk.android.core.identity.TwitterLoginButton
-
+/**
+ * Created by Hardik on 2019-10-12.
+ */
 class TweetLoginActivity : AppCompatActivity() {
 
     private lateinit var twitterLoginButton: TwitterLoginButton

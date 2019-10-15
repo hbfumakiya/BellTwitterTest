@@ -3,7 +3,9 @@ package com.demo.belltwittertest.ui.tweet
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.demo.belltwittertest.R
-
+/**
+ * Created by Hardik on 2019-10-12.
+ */
 class TweetDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

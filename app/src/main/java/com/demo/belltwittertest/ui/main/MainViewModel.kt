@@ -12,7 +12,10 @@ import com.twitter.sdk.android.core.models.Search
 import com.twitter.sdk.android.core.models.Tweet
 import com.twitter.sdk.android.core.services.params.Geocode
 
-
+/**
+ * Created by Hardik on 2019-10-12.
+ * this is main activity viewmodel .making call to fetch latest tweets around radius
+ */
 class MainViewModel : ViewModel() {
 
     var tweetList:MutableLiveData<MutableList<Tweet>> = MutableLiveData()
@@ -24,7 +27,7 @@ class MainViewModel : ViewModel() {
 
             CacheLoader.setRadius(radius.toDouble())
 
-            val geoCode=Geocode(location.latitude,location.longitude,radius.toInt(),Geocode.Distance.KILOMETERS)
+            val geoCode=Geocode(location.latitude,location.longitude,radius.toInt()/1000,Geocode.Distance.KILOMETERS)
 
             TwitterCore.getInstance().apiClient.searchService.tweets("#food",geoCode,null,null,
                 null,100,null,null,null,true)
@@ -45,7 +48,6 @@ class MainViewModel : ViewModel() {
         }catch (e:Exception){
             e.printStackTrace()
         }
-
 
     }
 

@@ -4,7 +4,9 @@ import android.location.Location
 import android.util.LruCache
 import com.twitter.sdk.android.core.models.Tweet
 import kotlinx.coroutines.*
-
+/**
+ * Created by Hardik on 2019-10-12.
+ */
 object CacheLoader : Cache<String,Any> {
 
     private val lruCache:LruCache<String,Any> =LruCache(3)

@@ -13,13 +13,16 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.demo.belltwittertest.R
 import com.demo.belltwittertest.TwitterInterface
+import com.demo.belltwittertest.ui.main.adapter.MyInfoViewAdapter.Companion.TWEET_ID
 import com.demo.belltwittertest.ui.search.adapter.TweetRecyclerAdapter
 import com.demo.belltwittertest.ui.tweet.TweetDetailActivity
 import com.demo.belltwittertest.ui.tweet.TweetLoginActivity
 import com.demo.belltwittertest.ui.tweet.TweetOperationViewModel
 import com.twitter.sdk.android.core.models.Tweet
 import kotlinx.android.synthetic.main.search_tweet_fragment.*
-
+/**
+ * Created by Hardik on 2019-10-12.
+ */
 
 class TweetSearchFragment:Fragment(),TwitterInterface {
 
@@ -143,7 +146,7 @@ class TweetSearchFragment:Fragment(),TwitterInterface {
     override fun viewTweet(id:Long) {
         activity?.let {
             val detailTweet= Intent(it, TweetDetailActivity::class.java)
-            detailTweet.putExtra("id",id)
+            detailTweet.putExtra(TWEET_ID,id)
             it.startActivity(detailTweet)
         }
 

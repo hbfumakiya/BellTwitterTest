@@ -5,7 +5,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.demo.belltwittertest.R
 import com.demo.belltwittertest.utils.PermissionValidator
-
+/**
+ * Created by Hardik on 2019-10-12.
+ * this is activity for search tweets
+ */
 class TweetSearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

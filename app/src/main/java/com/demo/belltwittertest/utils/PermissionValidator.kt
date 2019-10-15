@@ -4,10 +4,12 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.text.BoringLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
+/**
+ * Created by Hardik on 2019-10-12.
+ */
 object PermissionValidator {
 
     const val PERMISSION_REQUEST=2000

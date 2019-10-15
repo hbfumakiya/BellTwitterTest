@@ -3,12 +3,15 @@ package com.demo.belltwittertest
 import android.app.Application
 import android.util.Log
 import com.demo.belltwittertest.utils.Const
-import com.twitter.sdk.android.core.*
+import com.twitter.sdk.android.core.DefaultLogger
+import com.twitter.sdk.android.core.Twitter
+import com.twitter.sdk.android.core.TwitterAuthConfig
+import com.twitter.sdk.android.core.TwitterConfig
 
 /**
  * Created by Hardik on 2019-10-12.
  */
-class MyTwitterApp :Application() {
+class BellTwitterApp :Application() {
     override fun onCreate() {
         super.onCreate()
        val twitterConfig= configureTwitterInstance()

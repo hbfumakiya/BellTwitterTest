@@ -10,9 +10,11 @@ import com.demo.belltwittertest.R
 import com.demo.belltwittertest.ui.search.TweetSearchActivity
 import com.demo.belltwittertest.utils.PermissionValidator
 import com.demo.belltwittertest.utils.PermissionValidator.PERMISSION_REQUEST
-import java.security.Permission
 
-
+/**
+ * Created by Hardik on 2019-10-12.
+ * this is launcher activity for app
+ */
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +28,6 @@ class MainActivity : AppCompatActivity() {
         }else {
             PermissionValidator.requestPermission(this)
         }
-
-
     }
 
     private fun loadMainFragment() {

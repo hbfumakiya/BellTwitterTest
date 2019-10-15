@@ -29,6 +29,10 @@ import com.google.android.gms.maps.model.*
 import com.twitter.sdk.android.core.models.Tweet
 import kotlinx.android.synthetic.main.main_fragment.*
 
+/**
+ * Created by Hardik on 2019-10-12.
+ * this fragment is part of main activity
+ */
 
 class MainFragment : Fragment(), OnMapReadyCallback {
 
@@ -110,35 +114,21 @@ class MainFragment : Fragment(), OnMapReadyCallback {
             location= CacheLoader.getLocation()
 
         location?.let {
-
             mLocation = LatLng(it.latitude, it.longitude)
-            mLocation.let {
-                mMap.apply {
-                    moveCamera(CameraUpdateFactory.newLatLng(mLocation))
-                    animateCamera(
-                        CameraUpdateFactory.newCameraPosition(
-                            CameraPosition.fromLatLngZoom(
-                                mLocation,
-                                DEFAULT_ZOOM_SCALE
-                            )
-                        )
-                    )
-                    activity?.let {activity->
-                        val adapter= MyInfoViewAdapter(activity)
-                        setInfoWindowAdapter(adapter)
-                        setOnInfoWindowClickListener(adapter)
-                    }
 
-                    uiSettings.isMyLocationButtonEnabled = false
-                }
-            }
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(mLocation))
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(mLocation, DEFAULT_ZOOM_SCALE) ))
+            mMap.uiSettings.isMyLocationButtonEnabled = false
+
             activity?.let {activity->
+                val adapter= MyInfoViewAdapter(activity)
+                mMap.setInfoWindowAdapter(adapter)
+                mMap.setOnInfoWindowClickListener(adapter)
                 if (activity.isNetworkAvailable())
                     viewModel.getNearbyTweets(it, circleRadius.toFloat())
                 else
                     Toast.makeText(activity, R.string.check_internet, Toast.LENGTH_SHORT).show()
             }
-
 
         }
 
@@ -149,11 +139,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
         activity?.let {
             val locationManager = it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-            return if (ContextCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-            )
+            return if (ContextCompat.checkSelfPermission( it, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                 locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             else
                 null

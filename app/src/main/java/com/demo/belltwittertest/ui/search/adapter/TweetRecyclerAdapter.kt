@@ -17,7 +17,10 @@ import com.twitter.sdk.android.core.models.Tweet
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+/**
+ * Created by Hardik on 2019-10-12.
+ * this is recycler view adapter for tweet items
+ */
 class TweetRecyclerAdapter (private val context: Context, private var tweets: ArrayList<Tweet>,
                             private val twitInterface:TwitterInterface) :  RecyclerView.Adapter<TweetRecyclerAdapter.TweetViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TweetViewHolder {
@@ -52,7 +55,6 @@ class TweetRecyclerAdapter (private val context: Context, private var tweets: Ar
         }
     }
 
-    // this is viewholder for recyclerview
     inner class TweetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: Tweet) = with(itemView) {
             with(itemView.findViewById<ImageView>(R.id.profileView)){
@@ -113,8 +115,8 @@ class TweetRecyclerAdapter (private val context: Context, private var tweets: Ar
                         loadUrl(item.getImageUrl())
                         setOnClickListener{
                             val intent =  Intent(context, MediaViewActivity::class.java)
-                            intent.putExtra("type", "image")
-                            intent.putExtra("image", item.getImageUrl())
+                            intent.putExtra(TYPE, TYPE_IMAGE)
+                            intent.putExtra(TYPE_IMAGE, item.getImageUrl())
                             context.startActivity(intent)
                         }
                     }
@@ -124,9 +126,9 @@ class TweetRecyclerAdapter (private val context: Context, private var tweets: Ar
                         setOnClickListener {
                             val pair=item.getVideoUrl()
                             val intent =  Intent(context, MediaViewActivity::class.java)
-                            intent.putExtra("type", "video")
-                            intent.putExtra("video", pair.first)
-                            intent.putExtra("videoType", pair.second)
+                            intent.putExtra(TYPE, TYPE_VIDEO)
+                            intent.putExtra(TYPE_VIDEO, pair.first)
+                            intent.putExtra(VIDEO_TYPE, pair.second)
                             context.startActivity(intent)
                         }
 
@@ -140,6 +142,13 @@ class TweetRecyclerAdapter (private val context: Context, private var tweets: Ar
                 twitInterface.viewTweet(item.id)
             }
         }
+
+    }
+    companion object{
+        const val TYPE="type"
+        const val TYPE_IMAGE="image"
+        const val TYPE_VIDEO="video"
+        const val VIDEO_TYPE="videoType"
 
     }
 }

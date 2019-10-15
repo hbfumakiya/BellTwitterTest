@@ -14,21 +14,28 @@ import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter
 import com.google.android.gms.maps.model.Marker
 import org.json.JSONObject
 
+/**
+ * Created by Hardik on 2019-10-12.
+ *
+ * this class is created to display custom popup on marker click
+ */
+
 class MyInfoViewAdapter(private val activity: Activity): InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {
 
+    companion object{
+        const val IMG_URL="imgUrl"
+        const val TWEET_ID="id"
+    }
 
     override fun getInfoContents(marker: Marker?): View {
        val view=LayoutInflater.from(activity).inflate(R.layout.info_marker_view,null)
         val data=getMarkerData(marker)
-        val imgUrl= data.getString("imgUrl")
+        val imgUrl= data.getString(IMG_URL)
 
         view.findViewById<TextView>(R.id.title).text= marker?.title
 
         val imageView=view.findViewById<ImageView>(R.id.img)
 
-//        Glide.with(activity)
-//            .load(imgUrl)
-//            .into(imageView)
         imageView.loadUrl(imgUrl)
 
         return view
@@ -37,10 +44,10 @@ class MyInfoViewAdapter(private val activity: Activity): InfoWindowAdapter, Goog
     override fun onInfoWindowClick(p0: Marker?)
     {
         val data = getMarkerData(p0)
-        val id= data.getLong("id")
+        val id= data.getLong(TWEET_ID)
 
         val detailTweet= Intent(activity, TweetDetailActivity::class.java)
-        detailTweet.putExtra("id",id)
+        detailTweet.putExtra(TWEET_ID,id)
         activity.startActivity(detailTweet)
     }
 
