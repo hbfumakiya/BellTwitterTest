@@ -123,7 +123,7 @@ class TweetDetailFragment:Fragment(),TwitterInterface {
                         visibility=View.VISIBLE
                         loadUrl(tweet.getVideoCoverUrl())
                         setOnClickListener {
-                            val pair=tweet.getVideoUrlType()
+                            val pair=tweet.getVideoUrl()
                             val intent =  Intent(context, MediaViewActivity::class.java)
                             intent.putExtra("type", "video")
                             intent.putExtra("video", pair.first)

@@ -122,7 +122,7 @@ class TweetRecyclerAdapter (private val context: Context, private var tweets: Ar
                         visibility=View.VISIBLE
                         loadUrl(item.getVideoCoverUrl())
                         setOnClickListener {
-                            val pair=item.getVideoUrlType()
+                            val pair=item.getVideoUrl()
                             val intent =  Intent(context, MediaViewActivity::class.java)
                             intent.putExtra("type", "video")
                             intent.putExtra("video", pair.first)

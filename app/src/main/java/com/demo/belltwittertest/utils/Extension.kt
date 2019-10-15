@@ -105,9 +105,9 @@ fun Tweet.getVideoCoverUrl(): String {
     throw RuntimeException("No video")
 }
 
-fun Tweet.getVideoUrlType(): Pair<String, String> {
+fun Tweet.getVideoUrl(): Pair<String, String> {
     if (hasSingleVideo() || hasMultipleMedia()) {
-        return Pair(extendedEntities.media[0].videoInfo.variants[0].url, extendedEntities.media[0].videoInfo.variants[0].contentType) // ideally we will pick a variant (i.e video quality) based on the screen size or user preferences
+        return Pair(extendedEntities.media[0].videoInfo.variants[0].url, extendedEntities.media[0].videoInfo.variants[0].contentType)
     }
     throw RuntimeException("No video")
 }
