@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.demo.belltwittertest.R
 import com.demo.belltwittertest.TwitterInterface
 import com.demo.belltwittertest.ui.MediaViewActivity
-import com.demo.belltwittertest.ui.main.adapter.MyInfoViewAdapter.Companion.TWEET_ID
+import com.demo.belltwittertest.ui.main.adapter.MapInfoViewAdapter.Companion.TWEET_ID
 import com.demo.belltwittertest.utils.*
 import com.twitter.sdk.android.core.models.Tweet
 import kotlinx.android.synthetic.main.media_layout.*
@@ -54,7 +54,7 @@ class TweetDetailFragment:Fragment(),TwitterInterface {
 
         tweetOpViewModel = ViewModelProviders.of(this).get(TweetOperationViewModel::class.java)
 
-        tweetOpViewModel.retrivedTweet.observe(this, Observer {
+        tweetOpViewModel.getRetrivedTweet().observe(this, Observer {
             displayTweet(it)
         })
 

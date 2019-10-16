@@ -9,4 +9,5 @@
     <string name="loginTwitter">Login with Twitter</string>
     <string name="invalidUser">Invalid User</string>
     <string name="successAuth">Successful Authentication</string>
+    <string name="test">test</string>
 </resources>

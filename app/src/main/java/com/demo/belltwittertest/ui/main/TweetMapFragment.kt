@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.demo.belltwittertest.R
-import com.demo.belltwittertest.ui.main.adapter.MyInfoViewAdapter
+import com.demo.belltwittertest.ui.main.adapter.MapInfoViewAdapter
 import com.demo.belltwittertest.utils.*
 import com.demo.belltwittertest.utils.Const.DEFAULT_RADIUS
 import com.demo.belltwittertest.utils.Const.DEFAULT_ZOOM_SCALE
@@ -34,13 +34,13 @@ import kotlinx.android.synthetic.main.main_fragment.*
  * this fragment is part of main activity
  */
 
-class MainFragment : Fragment(), OnMapReadyCallback {
+class TweetMapFragment : Fragment(), OnMapReadyCallback {
 
     companion object {
-        fun newInstance() = MainFragment()
+        fun newInstance() = TweetMapFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: TweetMapViewModel
 
     private lateinit var mMap: GoogleMap
     private lateinit var mLocation: LatLng
@@ -62,9 +62,9 @@ class MainFragment : Fragment(), OnMapReadyCallback {
 
         initUI()
 
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(TweetMapViewModel::class.java)
 
-        viewModel.tweetList.observe(this, Observer {
+        viewModel.getTweetResult().observe(this, Observer {
             loadTweetsOnMap(it)
         })
 
@@ -121,7 +121,7 @@ class MainFragment : Fragment(), OnMapReadyCallback {
             mMap.uiSettings.isMyLocationButtonEnabled = false
 
             activity?.let {activity->
-                val adapter= MyInfoViewAdapter(activity)
+                val adapter= MapInfoViewAdapter(activity)
                 mMap.setInfoWindowAdapter(adapter)
                 mMap.setOnInfoWindowClickListener(adapter)
                 if (activity.isNetworkAvailable())

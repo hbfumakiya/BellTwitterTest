@@ -20,7 +20,7 @@ import org.json.JSONObject
  * this class is created to display custom popup on marker click
  */
 
-class MyInfoViewAdapter(private val activity: Activity): InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {
+class MapInfoViewAdapter(private val activity: Activity): InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {
 
     companion object{
         const val IMG_URL="imgUrl"

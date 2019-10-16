@@ -1,6 +1,7 @@
 package com.demo.belltwittertest.ui.tweet
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.twitter.sdk.android.core.Callback
@@ -13,6 +14,8 @@ import com.twitter.sdk.android.core.models.Tweet
  */
 class TweetOperationViewModel :ViewModel() {
     var retrivedTweet: MutableLiveData<Tweet> = MutableLiveData()
+
+    fun getRetrivedTweet(): LiveData<Tweet> = retrivedTweet
 
     val callback=object : Callback<Tweet>() {
         override fun success(result: Result<Tweet>?) {

@@ -7,8 +7,8 @@ import android.net.NetworkInfo
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.demo.belltwittertest.R
-import com.demo.belltwittertest.ui.main.adapter.MyInfoViewAdapter.Companion.IMG_URL
-import com.demo.belltwittertest.ui.main.adapter.MyInfoViewAdapter.Companion.TWEET_ID
+import com.demo.belltwittertest.ui.main.adapter.MapInfoViewAdapter.Companion.IMG_URL
+import com.demo.belltwittertest.ui.main.adapter.MapInfoViewAdapter.Companion.TWEET_ID
 import com.demo.belltwittertest.utils.Const.DEFAULT_ZOOM_SCALE
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.LatLng

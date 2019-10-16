@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.demo.belltwittertest.R
 import com.demo.belltwittertest.TwitterInterface
-import com.demo.belltwittertest.ui.main.adapter.MyInfoViewAdapter.Companion.TWEET_ID
+import com.demo.belltwittertest.ui.main.adapter.MapInfoViewAdapter.Companion.TWEET_ID
 import com.demo.belltwittertest.ui.search.adapter.TweetRecyclerAdapter
 import com.demo.belltwittertest.ui.tweet.TweetDetailActivity
 import com.demo.belltwittertest.ui.tweet.TweetLoginActivity
@@ -47,10 +47,11 @@ class TweetSearchFragment:Fragment(),TwitterInterface {
         tweetSearchviewModel = ViewModelProviders.of(this).get(TweetSearchViewModel::class.java)
         tweetOpViewModel = ViewModelProviders.of(this).get(TweetOperationViewModel::class.java)
 
-        tweetSearchviewModel.filteredTweets.observe(this, Observer {
+        tweetSearchviewModel.getFilteredTweets().observe(this, Observer {
             loadTweetsOnRecyclerView(it as ArrayList<Tweet>)
         })
-        tweetOpViewModel.retrivedTweet.observe(this, Observer {
+
+        tweetOpViewModel.getRetrivedTweet().observe(this, Observer {
             updateTweet(it)
         })
 

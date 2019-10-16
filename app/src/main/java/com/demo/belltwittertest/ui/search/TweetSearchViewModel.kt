@@ -1,5 +1,6 @@
 package com.demo.belltwittertest.ui.search
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.demo.belltwittertest.utils.CacheLoader
@@ -16,6 +17,8 @@ import com.twitter.sdk.android.core.services.params.Geocode
  */
 class TweetSearchViewModel :ViewModel() {
     var filteredTweets: MutableLiveData<MutableList<Tweet>> = MutableLiveData()
+
+    fun getFilteredTweets(): LiveData<MutableList<Tweet>> = filteredTweets
 
     fun filterTweets(filterText:String){
 

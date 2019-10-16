@@ -15,7 +15,7 @@ import com.demo.belltwittertest.utils.PermissionValidator.PERMISSION_REQUEST
  * Created by Hardik on 2019-10-12.
  * this is launcher activity for app
  */
-class MainActivity : AppCompatActivity() {
+class TweetMapActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadMainFragment() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, MainFragment.newInstance())
+            .replace(R.id.container, TweetMapFragment.newInstance())
             .commitNow()
     }
 
